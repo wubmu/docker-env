@@ -1,0 +1,57 @@
+# Kibana is served by a back end server. This setting specifies the port to use.
+server.port: 5601
+
+# Specifies the address to which the Kibana server will bind. IP addresses and host names are both valid values.
+server.host: "0.0.0.0"
+
+# The URLs of the Elasticsearch instances to use for all your queries.
+elasticsearch.hosts: ["http://elasticsearch:9200"]
+
+# When this setting's value is true Kibana uses the hostname specified in the server.host
+# setting. When the value of this setting is false, Kibana uses the hostname of the host
+# that connects to this Kibana instance.
+server.name: "kibana"
+
+# The Kibana server's name. This is used for identifying instances within logs.
+server.publicBaseUrl: "http://localhost:5601"
+
+# The maximum payload size in bytes for incoming server requests.
+server.maxPayloadBytes: 10485760
+
+# The Kibana server's name. This is used for identifying instances within logs.
+server.rewriteBasePath: false
+
+# Elasti csearch connection timeout
+elasticsearch.requestTimeout: 60000
+
+# Time in milliseconds to wait for Elasticsearch to respond to pings. Defaults to the value of
+# the elasticsearch.requestTimeout setting.
+elasticsearch.pingTimeout: 3000
+
+# Time in milliseconds to wait for responses from the back end or Elasticsearch. This value
+# must be a positive integer.
+elasticsearch.shutdownTimeout: 5000
+
+# Time in milliseconds to wait for Elasticsearch at Kibana startup before retrying.
+elasticsearch.startupTimeout: 5000
+
+# Monitor Kibana server performance
+monitoring.ui.container.elasticsearch.enabled: true
+
+# Security settings
+xpack.security.enabled: false
+xpack.encryptedSavedObjects.encryptionKey: "something_at_least_32_characters_long"
+
+# Internationalization
+i18n.locale: "zh-CN"
+
+# Logging
+logging.appenders:
+  file:
+    type: file
+    fileName: /usr/share/kibana/logs/kibana.log
+    layout:
+      type: json
+logging.root.appenders:
+  - default
+  - file

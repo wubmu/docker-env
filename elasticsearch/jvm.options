@@ -1,0 +1,83 @@
+## JVM configuration
+
+################################################################
+## IMPORTANT: JVM heap size
+################################################################
+##
+## The heap size is automatically configured by Elasticsearch
+## based on the available memory in your system.
+##
+## Manual heap size configuration
+## -Xms1g
+## -Xmx1g
+##
+## Make sure that the min and max heap sizes are the same to
+## avoid JVM heap resize pauses.
+##
+## Xms represents the initial size of total heap space
+## Xmx represents the maximum size of total heap space
+##
+## If you need to set a custom heap size, set both -Xms and -Xmx.
+## For more details, see
+## https://www.elastic.co/guide/en/elasticsearch/reference/current/heap-size.html
+##
+## For production use, ensure that the JVM heap size is set to about
+## half of the available RAM, but not more than 31GB.
+##
+## For demonstration purposes, we set a small heap size here:
+-Xms1g
+-Xmx1g
+
+################################################################
+## GC configuration
+################################################################
+
+# Use G1GC garbage collector
+-XX:+UseG1GC
+
+# G1GC configuration
+-XX:+UnlockExperimentalVMOptions
+-XX:MaxGCPauseMillis=200
+-XX:G1HeapRegionSize=16m
+-XX:G1NewSizePercent=10
+-XX:G1MaxNewSizePercent=30
+-XX:G1MixedGCCountTarget=8
+-XX:InitiatingHeapOccupancyPercent=45
+
+# Disable explicit GC
+-XX:+DisableExplicitGC
+
+# Enable GC logging
+-Xlog:gc*:file=/usr/share/elasticsearch/logs/gc.log:time,uptime,level,tags:filecount=10,filesize=64m
+
+################################################################
+## General settings
+################################################################
+
+# Set locale
+-Duser.language=en
+-Duser.country=US
+
+# Set timezone
+-Duser.timezone=UTC
+
+# Enable URLClassLoader sharing
+-XX:+ShareDumpCache
+
+# Memory settings
+-XX:MaxDirectMemorySize=1g
+
+# Error handling
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=/usr/share/elasticsearch/logs/heapdump.hprof
+-XX:+ExitOnOutOfMemoryError
+
+# Performance settings
+-XX:+UseCompressedOops
+-XX:+UseCompressedClassPointers
+-XX:+UnlockDiagnosticVMOptions
+-XX:+LogVMOutput
+-XX:LogFile=/usr/share/elasticsearch/logs/jvm.log
+
+# File descriptor settings
+-XX:MaxFDLimit=65536

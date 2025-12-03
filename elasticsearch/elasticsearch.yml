@@ -1,0 +1,44 @@
+cluster.name: es-cluster
+node.name: elasticsearch
+node.roles: [master, data, ingest]
+
+# 网络配置
+network.host: 0.0.0.0
+http.port: 9200
+transport.port: 9300
+
+# 发现配置
+discovery.type: single-node
+
+# 内存配置
+bootstrap.memory_lock: true
+
+# 路径配置
+path.data: /usr/share/elasticsearch/data
+path.logs: /usr/share/elasticsearch/logs
+
+# 安全配置
+xpack.security.enabled: false
+xpack.security.enrollment.enabled: false
+
+# 监控配置
+xpack.monitoring.collection.enabled: true
+
+# 索引配置
+action.auto_create_index: true
+
+# 插件配置
+script.allowed_types: inline
+script.allowed_contexts: search, update, aggs
+
+# 线程池配置
+thread_pool.write.queue_size: 1000
+thread_pool.search.queue_size: 1000
+
+# 集群配置
+cluster.initial_master_nodes: ["elasticsearch"]
+
+# 跨域配置 (仅用于开发环境)
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+http.cors.allow-headers: "Authorization,X-Requested-With,Content-Type,Content-Length"
