@@ -1,0 +1,105 @@
+version: '3'
+
+services:
+  # Zookeeper服务配置
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest # 使用最新版本的Confluent Zookeeper镜像
+    container_name: zookeeper # 容器名称
+    ports:
+      - "2181:2181" # 暴露Zookeeper客户端端口
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181 # 设置Zookeeper客户端端口
+      ZOOKEEPER_TICK_TIME: 2000 # 设置基本时间单位（毫秒）
+    volumes:
+      - ./zk-data:/var/lib/zookeeper/data # 持久化Zookeeper数据
+      - ./zk-logs:/var/lib/zookeeper/log # 持久化Zookeeper日志
+    networks:
+      - kafka-net # 加入Kafka网络
+
+  # Kafka broker 1配置
+  kafka1:
+    image: confluentinc/cp-kafka:latest # 使用最新版本的Confluent Kafka镜像
+    container_name: kafka1 # 容器名称
+    depends_on:
+      - zookeeper # 依赖Zookeeper服务
+    ports:
+      - "9092:9092" # 内部通信端口
+      - "19092:19092" # 外部访问端口
+    environment:
+      KAFKA_BROKER_ID: 1 # 设置broker ID
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181 # 连接Zookeeper服务
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092,PLAINTEXT_HOST://localhost:19092 # 配置监听地址
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT # 配置安全协议
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT # 设置broker间通信使用的监听器
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3 # 设置偏移量主题的复制因子
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true" # 允许自动创建主题
+    volumes:
+      - ./kafka1-data:/var/lib/kafka/data # 持久化Kafka数据
+    networks:
+      - kafka-net # 加入Kafka网络
+
+  # Kafka broker 2配置
+  kafka2:
+    image: confluentinc/cp-kafka:latest # 使用最新版本的Confluent Kafka镜像
+    container_name: kafka2 # 容器名称
+    depends_on:
+      - zookeeper # 依赖Zookeeper服务
+    ports:
+      - "9093:9093" # 内部通信端口
+      - "19093:19093" # 外部访问端口
+    environment:
+      KAFKA_BROKER_ID: 2 # 设置broker ID
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181 # 连接Zookeeper服务
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9093,PLAINTEXT_HOST://localhost:19093 # 配置监听地址
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT # 配置安全协议
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT # 设置broker间通信使用的监听器
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3 # 设置偏移量主题的复制因子
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true" # 允许自动创建主题
+    volumes:
+      - ./kafka2-data:/var/lib/kafka/data # 持久化Kafka数据
+    networks:
+      - kafka-net # 加入Kafka网络
+
+  # Kafka broker 3配置
+  kafka3:
+    image: confluentinc/cp-kafka:latest # 使用最新版本的Confluent Kafka镜像
+    container_name: kafka3 # 容器名称
+    depends_on:
+      - zookeeper # 依赖Zookeeper服务
+    ports:
+      - "9094:9094" # 内部通信端口
+      - "19094:19094" # 外部访问端口
+    environment:
+      KAFKA_BROKER_ID: 3 # 设置broker ID
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181 # 连接Zookeeper服务
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9094,PLAINTEXT_HOST://localhost:19094 # 配置监听地址
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT # 配置安全协议
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT # 设置broker间通信使用的监听器
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3 # 设置偏移量主题的复制因子
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true" # 允许自动创建主题
+    volumes:
+      - ./kafka3-data:/var/lib/kafka/data # 持久化Kafka数据
+    networks:
+      - kafka-net # 加入Kafka网络
+
+  # Kafka UI管理界面配置
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest # 使用最新版本的Kafka UI镜像
+    container_name: kafka-ui # 容器名称
+    depends_on:
+      - kafka1 # 依赖Kafka broker服务
+      - kafka2
+      - kafka3
+    ports:
+      - "8080:8080" # Web界面访问端口
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local-kafka-cluster # 设置Kafka集群名称
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:9092,kafka2:9093,kafka3:9094 # 配置Kafka集群地址
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181 # 配置Zookeeper连接地址
+    networks:
+      - kafka-net # 加入Kafka网络
+
+# 网络配置
+networks:
+  kafka-net: # 定义Kafka网络
+    driver: bridge # 使用bridge网络驱动
