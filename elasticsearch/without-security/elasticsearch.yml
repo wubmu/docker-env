@@ -29,14 +29,11 @@ action.auto_create_index: true
 
 # 插件配置
 script.allowed_types: inline
-script.allowed_contexts: search, update, aggs
 
 # 线程池配置
 thread_pool.write.queue_size: 1000
 thread_pool.search.queue_size: 1000
 
-# 集群配置
-cluster.initial_master_nodes: ["elasticsearch"]
 
 # 跨域配置 (仅用于开发环境)
 http.cors.enabled: true
