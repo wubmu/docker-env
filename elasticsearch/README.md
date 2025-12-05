@@ -184,6 +184,45 @@ ulimit -n 65536
 - 开发环境：1-2GB
 - 生产环境：建议不超过物理内存的 50%，最大 31GB
 
+## 账号密码认证调用案例
+
+### 使用 curl 命令进行认证操作
+
+```bash
+# 检查集群健康状态
+curl -u elastic:YourSecurePassword123! http://YOUR_SERVER_IP:9200/_cluster/health
+
+# 创建索引
+curl -u elastic:YourSecurePassword123! -X PUT "http://YOUR_SERVER_IP:9200/my-index" \
+  -H 'Content-Type: application/json'
+
+# 插入文档
+curl -u elastic:YourSecurePassword123! -X POST "http://YOUR_SERVER_IP:9200/my-index/_doc" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "title": "Elasticsearch Security Guide",
+    "author": "John Doe",
+    "tags": ["elasticsearch", "security"]
+  }'
+
+# 搜索文档
+curl -u elastic:YourSecurePassword123! -X GET "http://YOUR_SERVER_IP:9200/my-index/_search" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "query": {
+      "match": {
+        "title": "security"
+      }
+    }
+  }'
+
+# 查看所有索引
+curl -u elastic:YourSecurePassword123! http://YOUR_SERVER_IP:9200/_cat/indices?v
+
+# 删除索引
+curl -u elastic:YourSecurePassword123! -X DELETE "http://YOUR_SERVER_IP:9200/my-index"
+```
+
 ## 监控和日志
 
 ### 查看日志
