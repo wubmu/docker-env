@@ -18,9 +18,7 @@ path.data: /usr/share/elasticsearch/data
 path.logs: /usr/share/elasticsearch/logs
 
 # 安全配置
-xpack.security.enabled: true
-xpack.security.transport.ssl.enabled: false
-xpack.security.http.ssl.enabled: false
+xpack.security.enabled: false
 xpack.security.enrollment.enabled: false
 
 # 监控配置

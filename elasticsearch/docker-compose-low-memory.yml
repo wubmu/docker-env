@@ -9,10 +9,10 @@ services:
       - cluster.name=es-cluster
       - discovery.type=single-node
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # 低内存配置
       - xpack.security.enabled=true
       - xpack.security.enrollment.enabled=true
-      - ELASTIC_PASSWORD=your_secure_password_here
+      - ELASTIC_PASSWORD=YourSecurePassword123!
       - xpack.monitoring.collection.enabled=true
       - network.host=0.0.0.0
       - transport.host=0.0.0.0
@@ -33,6 +33,12 @@ services:
     networks:
       - es-net
     restart: unless-stopped
+    deploy:  # 添加容器内存限制
+      resources:
+        limits:
+          memory: 1g
+        reservations:
+          memory: 512m
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
       interval: 30s
@@ -52,38 +58,22 @@ services:
       - SERVER_HOST=0.0.0.0
       - SERVER_PORT=5601
       - ELASTICSEARCH_USERNAME=elastic
-      - ELASTICSEARCH_PASSWORD=your_secure_password_here
+      - ELASTICSEARCH_PASSWORD=YourSecurePassword123!
     ports:
       - "5601:5601"
     networks:
       - es-net
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1g
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:5601/api/status || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 60s
-    profiles:
-      - tools
-
-  cerebro:
-    image: lmenezes/cerebro:latest
-    container_name: cerebro
-    depends_on:
-      es-node1:
-        condition: service_healthy
-    ports:
-      - "9000:9000"
-    environment:
-      - CEREbro_HOST=0.0.0.0
-      - CEREbro_PORT=9000
-      - CEREbro_BASEURL=http://localhost:9000
-    networks:
-      - es-net
-    restart: unless-stopped
-    profiles:
-      - tools
 
 volumes:
   es_data:

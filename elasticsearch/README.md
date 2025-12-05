@@ -1,24 +1,84 @@
-# Elasticsearch 单机版 Docker Compose 部署
+# Elasticsearch Docker 部署方案
 
-## 快速启动
+本项目提供了两种 Elasticsearch 部署配置：带安全认证和不带安全认证。
 
-### 基础启动 (仅 Elasticsearch + Kibana)
+## 目录结构
+
+```
+elasticsearch/
+├── with-security/          # 带安全认证的配置
+│   ├── docker-compose.yml  # Docker Compose 配置文件
+│   └── elasticsearch.yml   # Elasticsearch 配置文件
+├── without-security/       # 无安全认证的配置
+│   ├── docker-compose.yml  # Docker Compose 配置文件
+│   └── elasticsearch.yml   # Elasticsearch 配置文件
+├── docker-compose.yml      # 原始配置文件（无安全认证）
+├── elasticsearch.yml       # 原始配置文件
+└── README.md              # 使用说明文档
+```
+
+## 部署方式
+
+### 1. 带安全认证的部署（推荐用于生产环境）
+
 ```bash
-# 进入目录
-cd docker-env/elasticsearch
+cd with-security/
 
 # 启动服务
 docker-compose up -d
 
-# 查看状态
-docker-compose ps
-
-# 查看日志
-docker-compose logs -f
+# 查看 elastic 用户密码（默认：YourSecurePassword123!）
+# 建议修改 docker-compose.yml 中的密码
 ```
 
-### 完整启动 (包含管理工具)
+连接方式：
+- **HTTP API**: `http://YOUR_SERVER_IP:9200` (需要认证)
+- **Kibana**: `http://YOUR_SERVER_IP:5601` (用户名: elastic, 密码: YourSecurePassword123!)
+- **Cerebro**: `http://YOUR_SERVER_IP:9000`
+
+远程连接示例：
 ```bash
+# 使用 curl
+curl -u elastic:YourSecurePassword123! http://YOUR_SERVER_IP:9200/_cluster/health
+
+# 使用 Python
+from elasticsearch import Elasticsearch
+es = Elasticsearch(
+    ["http://YOUR_SERVER_IP:9200"],
+    http_auth=("elastic", "YourSecurePassword123!")
+)
+```
+
+### 2. 无安全认证的部署（适合开发测试）
+
+```bash
+cd without-security/
+
+# 启动服务
+docker-compose up -d
+```
+
+连接方式：
+- **HTTP API**: `http://YOUR_SERVER_IP:9200` (无需认证)
+- **Kibana**: `http://YOUR_SERVER_IP:5601` (无需认证)
+- **Cerebro**: `http://YOUR_SERVER_IP:9000`
+
+远程连接示例：
+```bash
+# 使用 curl
+curl http://YOUR_SERVER_IP:9200/_cluster/health
+
+# 使用 Python
+from elasticsearch import Elasticsearch
+es = Elasticsearch(["http://YOUR_SERVER_IP:9200"])
+```
+
+### 3. 原始配置（位于根目录）
+
+```bash
+# 在当前目录启动（无安全认证）
+docker-compose up -d
+
 # 启动所有服务，包括 Cerebro
 docker-compose --profile tools up -d
 ```

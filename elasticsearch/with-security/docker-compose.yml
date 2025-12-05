@@ -9,10 +9,10 @@ services:
       - cluster.name=es-cluster
       - discovery.type=single-node
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - xpack.security.enabled=true
-      - xpack.security.enrollment.enabled=true
-      - ELASTIC_PASSWORD=your_secure_password_here
+      - xpack.security.enrollment.enabled=false
+      - ELASTIC_PASSWORD=YourSecurePassword123!
       - xpack.monitoring.collection.enabled=true
       - network.host=0.0.0.0
       - transport.host=0.0.0.0
@@ -52,7 +52,7 @@ services:
       - SERVER_HOST=0.0.0.0
       - SERVER_PORT=5601
       - ELASTICSEARCH_USERNAME=elastic
-      - ELASTICSEARCH_PASSWORD=your_secure_password_here
+      - ELASTICSEARCH_PASSWORD=YourSecurePassword123!
     ports:
       - "5601:5601"
     networks:
