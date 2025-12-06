@@ -17,11 +17,11 @@ services:
       - CLICKHOUSE_PASSWORD=your_password_here
       - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
     volumes:
-      - ./clickhouse/data:/var/lib/clickhouse
-      - ./clickhouse/logs:/var/log/clickhouse-server
-      - ./clickhouse/config/config.xml:/etc/clickhouse-server/config.xml
-      - ./clickhouse/config/users.xml:/etc/clickhouse-server/users.xml
-      - ./clickhouse/config/custom.d:/etc/clickhouse-server/config.d
+      - ./data:/var/lib/clickhouse
+      - ./logs:/var/log/clickhouse-server
+      - ./config/config.xml:/etc/clickhouse-server/config.xml
+      - ./config/users.xml:/etc/clickhouse-server/users.xml
+      - ./config/custom.d:/etc/clickhouse-server/config.d
     networks:
       - clickhouse-network
     healthcheck:
