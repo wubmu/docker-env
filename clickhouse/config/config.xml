@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <yandex>
+    <!-- 跳过设置检查（避免配置错误） -->
+    <skip_check_for_incorrect_settings>1</skip_check_for_incorrect_settings>
+
     <!-- 日志级别 -->
     <logger>
         <level>information</level>
@@ -24,8 +27,7 @@
     <!-- 时区设置 -->
     <timezone>Asia/Shanghai</timezone>
 
-    <!-- 服务级别设置（适用于所有用户） -->
-    <max_concurrent_queries>20</max_concurrent_queries>
+    <!-- 服务级别设置（全局的，非用户级） -->
     <max_server_connections>4096</max_server_connections>
 
     <!-- 数据库默认引擎 -->
@@ -57,9 +59,6 @@
     <mark_cache_size>536870912</mark_cache_size>  <!-- 512MB -->
     <uncompressed_cache_size>268435456</uncompressed_cache_size>  <!-- 256MB -->
 
-    <!-- 服务级最大线程数（CPU核心数） -->
-    <max_threads>2</max_threads>
-
     <!-- MergeTree服务级设置 -->
     <merge_tree>
         <max_suspicious_broken_parts>2</max_suspicious_broken_parts>
@@ -73,4 +72,12 @@
     <!-- 禁用一些高级功能以节省内存 -->
     <enable_protobuf_compression>0</enable_protobuf_compression>
     <enable_compressed_flag>0</enable_compressed_flag>
+
+    <!-- 文件打开句柄数限制（低内存环境） -->
+    <max_open_files>65536</max_open_files>
+
+    <!-- 增加Merge操作间隔以减少资源使用 -->
+    <background_pool_size>4</background_pool_size>
+    <merge_selecting_sleep_ms>10000</merge_selecting_sleep_ms>
+    <cleanup_delay_period>120</cleanup_delay_period>
 </yandex>
