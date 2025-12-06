@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse-server
+    hostname: clickhouse-server
+    restart: unless-stopped
+    ports:
+      - "8123:8123"  # HTTP接口
+      - "9000:9000"  # TCP接口
+      - "9004:9004"  # MySQL兼容接口
+      - "9005:9005"  # PostgreSQL兼容接口
+    environment:
+      - CLICKHOUSE_DB=default
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=your_password_here
+      - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+    volumes:
+      - ./clickhouse/data:/var/lib/clickhouse
+      - ./clickhouse/logs:/var/log/clickhouse-server
+      - ./clickhouse/config/config.xml:/etc/clickhouse-server/config.xml
+      - ./clickhouse/config/users.xml:/etc/clickhouse-server/users.xml
+      - ./clickhouse/config/custom.d:/etc/clickhouse-server/config.d
+    networks:
+      - clickhouse-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8123/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # 可选：ClickHouse客户端容器
+  clickhouse-client:
+    image: clickhouse/clickhouse-client:latest
+    container_name: clickhouse-client
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    networks:
+      - clickhouse-network
+    command: >
+      sh -c "
+      echo 'Waiting for ClickHouse server...' &&
+      while ! nc -z clickhouse 9000; do sleep 1; done &&
+      echo 'ClickHouse server is ready!' &&
+      sleep infinity
+      "
+    profiles:
+      - client
+
+networks:
+  clickhouse-network:
+    driver: bridge
