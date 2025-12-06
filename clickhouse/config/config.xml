@@ -50,41 +50,12 @@
     <!-- 开启内置字典 -->
     <builtin_dictionaries_reload_interval>3600</builtin_dictionaries_reload_interval>
 
-    <!-- 跨副本复制设置 -->
-    <remote_servers incl="clickhouse_remote_servers"/>
-    <zookeeper incl="zookeeper-servers" optional="true"/>
-    <replica>
-        <!-- 可以在副本配置中使用宏 -->
-        <macros>
-            <shard>01</shard>
-            <replica>example01-01-1</replica>
-        </macros>
-    </replica>
-
-    <!-- 默认分片和副本配置 -->
-    <shard>
-        <replica>
-            <host>localhost</host>
-            <port>9000</port>
-        </replica>
-    </shard>
-
-    <!-- 集群配置 -->
-    <clickhouse_remote_servers>
-        <test_cluster>
-            <shard>
-                <replica>
-                    <host>localhost</host>
-                    <port>9000</port>
-                </replica>
-            </shard>
-        </test_cluster>
-    </clickhouse_remote_servers>
-
-    <!-- 允许Distributed表引擎 -->
-    <distributed_ddl>
-        <enable>1</enable>
-    </distributed_ddl>
+    <!-- 用户目录配置 -->
+    <user_directories>
+        <users_xml>
+            <path>/etc/clickhouse-server/users.xml</path>
+        </users_xml>
+    </user_directories>
 
     <!-- 缓存设置 -->
     <mark_cache_size>5368709120</mark_cache_size>
@@ -98,33 +69,18 @@
     <max_bytes_before_external_group_by>20000000000</max_bytes_before_external_group_by>
     <max_bytes_before_external_sort>20000000000</max_bytes_before_external_sort>
 
-    <!-- 锁超时 -->
-    <insert_deduplication>1</insert_deduplication>
-
-    <!-- 开启异步插入 -->
-    <async_insert>1</async_insert>
-    <async_insert_threads>16</async_insert_threads>
-    <async_insert_max_data_size>1000000</async_insert_max_data_size>
-    <async_insert_busy_timeout>100</async_insert_busy_timeout>
-    <async_insert_stale_timeout>600</async_insert_stale_timeout>
-
     <!-- MergeTree设置 -->
     <merge_tree>
         <max_suspicious_broken_parts>5</max_suspicious_broken_parts>
         <parts_to_delay_insert>150</parts_to_delay_insert>
         <parts_to_throw_insert>300</parts_to_throw_insert>
         <max_bytes_to_merge_at_max_space_in_pool>10737418240</max_bytes_to_merge_at_max_space_in_pool>
-        <max_number_of_merges_with_ttl_in_pool>5</max_number_of_merges_with_ttl_in_pool>
-        <cleanup_delay_period>60</cleanup_delay_period>
-        <number_of_free_entries_in_pool_to_lower_max_size_of_merge>8</number_of_free_entries_in_pool_to_lower_max_size_of_merge>
         <min_bytes_for_wide_part>0</min_bytes_for_wide_part>
         <min_rows_for_wide_part>0</min_rows_for_wide_part>
-        <ttl_only_drop_parts>0</ttl_only_drop_parts>
-        <merge_selecting_sleep_ms>5000</merge_selecting_sleep_ms>
-        <merge_max_block_size>8192</merge_max_block_size>
-        <max_replicated_logs_to_keep>1000</max_replicated_logs_to_keep>
-        <max_replicated_operations_to_keep>10000</max_replicated_operations_to_keep>
-        <replicated_fetches_http_connections_pool_size>32</replicated_fetches_http_connections_pool_size>
-        <replicated_bring_all_tiers_to_executor>1</replicated_bring_all_tiers_to_executor>
     </merge_tree>
+
+    <!-- 异步插入 -->
+    <async_insert>1</async_insert>
+    <async_insert_threads>16</async_insert_threads>
+    <async_insert_max_data_size>1000000</async_insert_max_data_size>
 </yandex>

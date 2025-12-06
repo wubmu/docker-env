@@ -12,21 +12,12 @@
             <max_threads>8</max_threads>
             <max_insert_threads>0</max_insert_threads>
             <max_concurrent_queries_for_user>100</max_concurrent_queries_for_user>
-            <distributed_ddl_task_timeout>180</distributed_ddl_task_timeout>
             <max_execution_time>3600</max_execution_time>
             <max_ast_depth>1000</max_ast_depth>
             <max_ast_elements>10000</max_ast_elements>
             <max_expanded_ast_elements>100000</max_expanded_ast_elements>
             <max_bytes_before_external_group_by>20000000000</max_bytes_before_external_group_by>
             <max_bytes_before_external_sort>20000000000</max_bytes_before_external_sort>
-            <priority>0</priority>
-            <allow_experimental_object_type>1</allow_experimental_object_type>
-            <allow_experimental_decimal_type>1</allow_experimental_decimal_type>
-            <allow_experimental_geo_types>1</allow_experimental_geo_types>
-            <allow_experimental_alter_materialized_view_structure>1</allow_experimental_alter_materialized_view_structure>
-            <allow_experimental_operations>1</allow_experimental_operations>
-            <allow_experimental_aggregate_functions>1</allow_experimental_aggregate_functions>
-            <allow_experimental_functions>1</allow_experimental_functions>
         </default>
 
         <!-- 只读配置 -->
@@ -72,7 +63,7 @@
 
         <!-- 管理员用户 -->
         <admin>
-            <password_sha256_hex>8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918</password_sha256_hex>  <!-- admin -->
+            <password_sha256_hex>8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918</password_sha256_hex>
             <profile>default</profile>
             <quota>default</quota>
             <access_management>1</access_management>
@@ -115,91 +106,4 @@
     <networks>
         <ip>::/0</ip>
     </networks>
-
-    <!-- 数据库列表 -->
-    <databases>
-        <default>
-            <engine>Ordinary</engine>
-        </default>
-    </databases>
-
-    <!-- 行策略 -->
-    <row_policies>
-    </row_policies>
-
-    <!-- 查询日志 -->
-    <query_log>
-        <database>system</database>
-        <table>query_log</table>
-        <partition_by>toYYYYMM(event_date)</partition_by>
-        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
-    </query_log>
-
-    <!-- 查询线程日志 -->
-    <query_thread_log>
-        <database>system</database>
-        <table>query_thread_log</table>
-        <partition_by />
-        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
-    </query_thread_log>
-
-    <!-- 错误日志 -->
-    <text_log>
-        <database>system</database>
-        <table>text_log</table>
-        <level>warning</level>
-        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
-    </text_log>
-
-    <!-- 指标日志 -->
-    <metric_log>
-        <database>system</database>
-        <table>metric_log</table>
-        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
-    </metric_log>
-
-    <!-- 异步指标日志 -->
-    <asynchronous_metric_log>
-        <database>system</database>
-        <table>asynchronous_metric_log</table>
-        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
-    </asynchronous_metric_log>
-
-    <!-- 操作日志 -->
-    <opentelemetry_span_log>
-        <database>system</database>
-        <table>opentelemetry_span_log</table>
-        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
-    </opentelemetry_span_log>
-
-    <!-- 跟踪日志 -->
-    <trace_log>
-        <database>system</database>
-        <table>trace_log</table>
-        <partition_by>toYYYYMM(event_date)</partition_by>
-        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
-    </trace_log>
-
-    <!-- 会话日志 -->
-    <session_log>
-        <database>system</database>
-        <table>session_log</table>
-        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
-    </session_log>
-
-    <!-- 部分日志 -->
-    <part_log>
-        <database>system</database>
-        <table>part_log</table>
-        <partition_by>toYYYYMM(event_date)</partition_by>
-        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
-    </part_log>
-
-    <!-- 崩溃日志 -->
-    <crash_log>
-        <database>system</database>
-        <table>crash_log</table>
-        <partition_by />
-        <flush_interval_milliseconds>1000</flush_interval_milliseconds>
-    </crash_log>
 </yandex>
