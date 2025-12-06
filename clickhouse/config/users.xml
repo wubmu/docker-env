@@ -29,11 +29,6 @@
             <!-- 外部处理限制（小内存环境） -->
             <max_bytes_before_external_group_by>100000000</max_bytes_before_external_group_by>  <!-- 100MB -->
             <max_bytes_before_external_sort>100000000</max_bytes_before_external_sort>  <!-- 100MB -->
-
-            <!-- 禁用一些功能以节省内存 -->
-            <allow_experimental_object_type>0</allow_experimental_object_type>
-            <allow_experimental_decimal_type>0</allow_experimental_decimal_type>
-            <allow_experimental_geo_types>0</allow_experimental_geo_types>
         </default>
 
         <!-- 只读配置 -->
