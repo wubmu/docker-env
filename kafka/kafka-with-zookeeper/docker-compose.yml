@@ -1,4 +1,3 @@
-version: '3'
 
 services:
   # Zookeeper服务配置
@@ -18,7 +17,7 @@ services:
 
   # Kafka broker 1配置
   kafka1:
-    image: confluentinc/cp-kafka:latest # 使用最新版本的Confluent Kafka镜像
+    image: confluentinc/cp-kafka:7.3.2 # 使用最新版本的Confluent Kafka镜像
     container_name: kafka1 # 容器名称
     depends_on:
       - zookeeper # 依赖Zookeeper服务
@@ -27,8 +26,15 @@ services:
       - "19092:19092" # 外部访问端口
     environment:
       KAFKA_BROKER_ID: 1 # 设置broker ID
+      # 禁用KRaft模式，强制使用Zookeeper
+      KAFKA_KRAFT_MODE: "false"
+      # 明确设置元数据存储类型
+      KAFKA_METADATA_STORE: "zookeeper"
+      # 明确设置process.roles为空，表示不使用KRaft
+      KAFKA_PROCESS_ROLES: ""
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181 # 连接Zookeeper服务
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092,PLAINTEXT_HOST://localhost:19092 # 配置监听地址
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:19092 # 配置实际监听地址
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT # 配置安全协议
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT # 设置broker间通信使用的监听器
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3 # 设置偏移量主题的复制因子
@@ -40,7 +46,7 @@ services:
 
   # Kafka broker 2配置
   kafka2:
-    image: confluentinc/cp-kafka:latest # 使用最新版本的Confluent Kafka镜像
+    image: confluentinc/cp-kafka:7.3.2 # 使用最新版本的Confluent Kafka镜像
     container_name: kafka2 # 容器名称
     depends_on:
       - zookeeper # 依赖Zookeeper服务
@@ -49,8 +55,15 @@ services:
       - "19093:19093" # 外部访问端口
     environment:
       KAFKA_BROKER_ID: 2 # 设置broker ID
+      # 禁用KRaft模式，强制使用Zookeeper
+      KAFKA_KRAFT_MODE: "false"
+      # 明确设置元数据存储类型
+      KAFKA_METADATA_STORE: "zookeeper"
+      # 明确设置process.roles为空，表示不使用KRaft
+      KAFKA_PROCESS_ROLES: ""
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181 # 连接Zookeeper服务
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9093,PLAINTEXT_HOST://localhost:19093 # 配置监听地址
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:19093 # 配置实际监听地址
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT # 配置安全协议
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT # 设置broker间通信使用的监听器
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3 # 设置偏移量主题的复制因子
@@ -62,7 +75,7 @@ services:
 
   # Kafka broker 3配置
   kafka3:
-    image: confluentinc/cp-kafka:latest # 使用最新版本的Confluent Kafka镜像
+    image: confluentinc/cp-kafka:7.3.2 # 使用最新版本的Confluent Kafka镜像
     container_name: kafka3 # 容器名称
     depends_on:
       - zookeeper # 依赖Zookeeper服务
@@ -71,8 +84,15 @@ services:
       - "19094:19094" # 外部访问端口
     environment:
       KAFKA_BROKER_ID: 3 # 设置broker ID
+      # 禁用KRaft模式，强制使用Zookeeper
+      KAFKA_KRAFT_MODE: "false"
+      # 明确设置元数据存储类型
+      KAFKA_METADATA_STORE: "zookeeper"
+      # 明确设置process.roles为空，表示不使用KRaft
+      KAFKA_PROCESS_ROLES: ""
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181 # 连接Zookeeper服务
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9094,PLAINTEXT_HOST://localhost:19094 # 配置监听地址
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9094,PLAINTEXT_HOST://0.0.0.0:19094 # 配置实际监听地址
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT # 配置安全协议
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT # 设置broker间通信使用的监听器
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3 # 设置偏移量主题的复制因子

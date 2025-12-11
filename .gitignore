@@ -1,0 +1,6 @@
+# Kafka with Zookeeper data directories
+kafka/kafka-with-zookeeper/kafka1-data/
+kafka/kafka-with-zookeeper/kafka2-data/
+kafka/kafka-with-zookeeper/kafka3-data/
+kafka/kafka-with-zookeeper/zk-data/
+kafka/kafka-with-zookeeper/zk-logs/
