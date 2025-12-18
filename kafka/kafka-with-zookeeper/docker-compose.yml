@@ -5,10 +5,10 @@ services:
     image: confluentinc/cp-zookeeper:latest # 使用最新版本的Confluent Zookeeper镜像
     container_name: zookeeper # 容器名称
     ports:
-      - "2181:2181" # 暴露Zookeeper客户端端口
+      - "2182:2181" # 暴露Zookeeper客户端端口
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181 # 设置Zookeeper客户端端口
-      ZOOKEEPER_TICK_TIME: 2000 # 设置基本时间单位（毫秒）
+      ZOOKEEPER_TICK_TIME: 10000 # 设置基本时间单位（毫秒）
     volumes:
       - ./zk-data:/var/lib/zookeeper/data # 持久化Zookeeper数据
       - ./zk-logs:/var/lib/zookeeper/log # 持久化Zookeeper日志

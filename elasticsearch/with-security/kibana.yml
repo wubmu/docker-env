@@ -1,0 +1,23 @@
+server.host: "0.0.0.0"
+server.port: 5601
+server.name: "kibana"
+
+elasticsearch.hosts: ["http://es-node1:9200"]
+elasticsearch.username: "kibana_system"
+elasticsearch.password: "kibana_system"
+
+# 启用 Kibana 登录功能
+xpack.security.enabled: true
+
+# 配置登录会话
+xpack.security.session.idleTimeout: "1h"
+xpack.security.session.lifespan: "30d"
+
+# 启用加密通信
+xpack.encryptedSavedObjects.encryptionKey: "min-32-byte-long-strong-encryption-key"
+
+# 启用报告功能
+xpack.reporting.enabled: true
+
+# 设置中文语言
+i18n.locale: "zh-CN"

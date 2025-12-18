@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: always
+    volumes:
+      - ./vw-data:/data
+    environment:
+      # 启用 WebSocket，这对于某些客户端和反向代理后的正常工作至关重要
+      - WEBSOCKET_ENABLED=true
+      # 设置您的管理员后台访问令牌，请务必修改为一个长而随机的字符串
+      - ADMIN_TOKEN=replace_this_with_a_very_secure_random_token
+    # 将此容器连接到您Nginx Proxy Manager所在的Docker网络
+    networks:
+      - npm_network
+
+networks:
+  npm_network:
+    # 声明这是一个已经存在的外部网络
+    external: true
+    # 如果您的NPM网络名称不是'npm_network'，请在这里修改
+    name: npm_network

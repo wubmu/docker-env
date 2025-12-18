@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  openldap:
+    image: osixia/openldap:1.5.0
+    container_name: openldap
+    hostname: openldap
+    ports:
+      - "389:389"
+      - "636:636"
+    volumes:
+      - ./data/ldap:/var/lib/ldap
+      - ./data/slapd.d:/etc/ldap/slapd.d
+    environment:
+      - LDAP_ORGANISATION=MyCompany
+      - LDAP_DOMAIN=mycompany.com
+      - LDAP_ADMIN_PASSWORD=admin_password
+    networks:
+      - ldap-net
+
+  phpldapadmin:
+    image: osixia/phpldapadmin:0.9.0
+    container_name: phpldapadmin
+    ports:
+      - "8080:80"
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=openldap
+      - PHPLDAPADMIN_HTTPS=false
+    depends_on:
+      - openldap
+    networks:
+      - ldap-net
+
+networks:
+  ldap-net:
+    driver: bridge
