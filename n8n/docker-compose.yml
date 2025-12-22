@@ -4,20 +4,40 @@ version: '3.8'
 services:
   # n8n 工作流自动化服务
   n8n:
-    image: n8nio/n8n:2.0.2  # 指定 n8n 版本
+    build:
+      context: .
+      dockerfile: Dockerfile.n8n
+    image: n8nio/n8n:2.0.2-custom  # 自定义镜像，包含 Chromium
     restart: always  # 自动重启策略
+    container_name: n8n
     ports:
       - "5678:5678"  # 将主机的 5678 端口映射到容器的 5678 端口
+      - "5679:5679"
+    # 安全配置 - 允许 Chromium 在容器中运行
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp=unconfined
     environment:
       # Node.js 环境
+      
       - NODE_ENV=production  # 生产环境模式
       - N8N_HOST=localhost    # n8n 访问地址
       - N8N_PORT=5678        # n8n 监听端口
       - N8N_PROTOCOL=http     # 使用 HTTP 协议
       - GENERIC_TIMEZONE=Asia/Shanghai
       - TZ= Asia/Shanghai
+      - N8N_SECURE_COOKIE=false
+      
       # 加密密钥 - 请修改为安全的随机密钥
       # - N8N_ENCRYPTION_KEY=your-secret-encryption-key-here
+      # 任务队列配置
+      - EXECUTIONS_MODE=regular
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_RUNNERS_MODE=external
+      - N8N_RUNNERS_BROKER_LISTEN_ADDRESS=0.0.0.0
+      - N8N_RUNNERS_AUTH_TOKEN=admin
+      - N8N_RUNNERS_PORT=5679
 
       # PostgreSQL 数据库配置
       - N8N_DATABASE_TYPE=postgres        # 数据库类型
@@ -26,11 +46,17 @@ services:
       - N8N_DATABASE_POSTGRES_DATABASE=n8n  # 数据库名称
       - N8N_DATABASE_POSTGRES_USER=n8n      # 数据库用户名
       - N8N_DATABASE_POSTGRES_PASSWORD=n8n_password  # 数据库密码
-
+      - N8N_NATIVE_PYTHON_RUNNER=true
       # 基础认证配置
       - N8N_BASIC_AUTH_ACTIVE=true      # 启用基础认证
       - N8N_BASIC_AUTH_USER=admin       # 管理员用户名
       - N8N_BASIC_AUTH_PASSWORD=admin_password  # 管理员密码
+
+      # Chromium/Puppeteer 配置
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+      - N8N_PUPPETEER_HEADLESS=true
+      - N8N_PUPPETEER_ARGS=--no-sandbox,--disable-setuid-sandbox,--disable-dev-shm-usage,--disable-accelerated-2d-canvas,--no-first-run,--no-zygote,--single-process,--disable-gpu
 
     volumes:
       - n8n_data:/home/node/.n8n  # 挂载卷，持久化 n8n 数据
@@ -43,6 +69,7 @@ services:
   postgres:
     image: postgres:15 # 使用 Alpine Linux 版本的 PostgreSQL 15
     restart: always  # 自动重启策略
+    container_name: p8n-pg
     environment:
       - POSTGRES_DB=n8n        # 默认数据库名称
       - POSTGRES_USER=n8n      # 数据库超级用户
@@ -54,12 +81,19 @@ services:
     networks:
       - n8n-network  # 使用自定义网络
   task-runners:
-    image: n8nio/runners:2.0.2
+    # image: n8nio/runners:2.0.2
+    image: n8nio/runners:custom
     container_name: n8n-runners
+    ports:
+      - "5681:5681"  # JavaScript runner health check
+      - "5682:5682"  # Python runner health check
     environment:
-      - N8N_RUNNERS_TASK_BROKER_URI=http://n8n-main:5679
-      # - N8N_RUNNERS_AUTH_TOKEN=your-secret-here
-      # etc.
+      - N8N_RUNNERS_TASK_BROKER_URI=http://n8n:5679
+      - N8N_RUNNERS_AUTH_TOKEN=admin
+      - N8N_RUNNERS_LANGUAGE_LOG_LEVEL=debug
+    working_dir: /opt/runners
+    volumes:
+      - ./n8n-task-runners.json:/etc/n8n-task-runners.json:ro
     depends_on:
       - n8n
     networks:

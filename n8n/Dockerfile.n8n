@@ -1,0 +1,33 @@
+# 基于 n8n 2.0.2 官方镜像
+FROM n8nio/n8n:2.0.2
+
+# 切换到 root 用户以安装软件包
+USER root
+
+# 安装 Chromium 及其依赖（Alpine Linux 使用 apk）
+# n8n 基于 Alpine Linux
+RUN apk update && apk add --no-cache \
+    chromium \
+    chromium-chromedriver \
+    ttf-freefont \
+    font-noto-cjk \
+    font-noto-cjk-extra \
+    font-noto-emoji \
+    && rm -rf /var/cache/apk/*
+
+# 设置 Chromium 环境变量（n8n 的 puppeteer 会使用）
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+# Chromium 运行参数（容器环境必需）
+ENV PUPPETEER_ARGS="--no-sandbox,--disable-setuid-sandbox,--disable-dev-shm-usage"
+
+# 验证安装
+RUN chromium --version
+
+# 切换回 n8n 默认用户 (node)
+USER node
+
+# 设置工作目录
+WORKDIR /home/node
+
+# 镜像构建完成
