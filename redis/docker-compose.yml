@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7.2-alpine
+    container_name: redis
+    restart: unless-stopped
+
+    # 端口映射 - 根据需要调整
+    ports:
+      - "6379:6379"
+
+    # 数据持久化
+    volumes:
+      - ./data:/data
+      # - ./redis.conf:/usr/local/etc/redis/redis.conf  # 如需自定义配置，取消注释
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 256M
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+    # 网络配置
+    networks:
+      - redis-network
+
+    # 环境变量
+    environment:
+      - TZ=Asia/Shanghai
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+
+    # 运行参数
+    command: redis-server --requirepass "$REDIS_PASSWORD"
+
+networks:
+  redis-network:
+    driver: bridge
