@@ -26,6 +26,7 @@ services:
     image: openlistteam/openlist:latest
     container_name: openlist
     restart: unless-stopped
+    user: "0:0"
     ports:
       - "5244:5244"
     environment:
@@ -38,10 +39,12 @@ services:
       DB_NAME: ${POSTGRES_DB}
       # 时区设置
       TZ: ${TZ}
+      # UMASK 设置
+      UMASK: 022
       # 站点URL（反向代理时需要配置，不要以/结尾）
       SITE_URL: ${SITE_URL}
     volumes:
-      - ./openlist-data:/opt/data
+      - ./openlist-data:/opt/openlist/data
     depends_on:
       db:
         condition: service_healthy
