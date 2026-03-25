@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 数据库服务
+  db:
+    image: postgres:15-alpine
+    container_name: openlist-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      - openlist-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # OpenList 文件列表服务
+  openlist:
+    image: openlistteam/openlist:latest
+    container_name: openlist
+    restart: unless-stopped
+    ports:
+      - "5244:5244"
+    environment:
+      # 数据库配置
+      DB_TYPE: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER}
+      DB_PASS: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+      # 时区设置
+      TZ: ${TZ}
+      # 站点URL（反向代理时需要配置，不要以/结尾）
+      SITE_URL: ${SITE_URL}
+    volumes:
+      - ./openlist-data:/opt/data
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - openlist-network
+      - npm_default
+
+networks:
+  openlist-network:
+    driver: bridge
+  npm_default:
+    external: true
+    name: npm_default
