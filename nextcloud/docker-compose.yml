@@ -70,11 +70,11 @@ services:
         condition: service_healthy
     networks:
       - nextcloud-network
-      - npm_network
+      - npm_default
 
 networks:
   nextcloud-network:
     driver: bridge
-  npm_network:
+  npm_default:
     external: true
-    name: npm_network
+    name: npm_default
