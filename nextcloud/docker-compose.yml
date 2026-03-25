@@ -57,6 +57,8 @@ services:
       REDIS_HOST_PASSWORD: ${REDIS_PASSWORD}
       # 时区设置
       TZ: ${TZ}
+      # 信任域名
+      NEXTCLOUD_TRUSTED_DOMAINS: ${NEXTCLOUD_TRUSTED_DOMAINS}
     volumes:
       - ./nextcloud-data:/var/www/html
       - ./nextcloud-apps:/var/www/html/custom_apps
