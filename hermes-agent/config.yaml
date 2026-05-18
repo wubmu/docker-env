@@ -1,0 +1,7 @@
+model:
+  provider: deepseek
+  model: deepseek-v4-pro
+
+fallback_providers:
+  - provider: deepseek
+    model: deepseek-v4-pro
