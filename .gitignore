@@ -4,3 +4,20 @@ kafka/kafka-with-zookeeper/kafka2-data/
 kafka/kafka-with-zookeeper/kafka3-data/
 kafka/kafka-with-zookeeper/zk-data/
 kafka/kafka-with-zookeeper/zk-logs/
+
+# Runtime data volumes
+nextcloud/nextcloud-data/
+nextcloud/postgres-data/
+openlist/openlist-data/
+openlist/postgres-data/
+
+# nextcloud config (may contain secrets)
+nextcloud/nextcloud-config/
+
+# code-server runtime / secrets
+code-server/home/
+code-server/config/
+code-server/.env
+
+# Offline resource binaries
+code-server/@offline-resource/*.tar.gz
