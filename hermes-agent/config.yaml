@@ -5,3 +5,14 @@ model:
 fallback_providers:
   - provider: deepseek
     model: deepseek-v4-pro
+
+# 语音转文字 (STT) — 免费本地方案
+stt:
+  enabled: true
+  provider: local
+  local:
+    model: base
+
+# 文字转语音 (TTS) — 免费 Edge TTS
+tts:
+  provider: edge
