@@ -4,30 +4,54 @@ services:
   code-server:
     # 使用本地Dockerfile构建镜像
     build:
-      context: . # 构建上下文为当前目录
-      dockerfile: Dockerfile # 使用当前目录的Dockerfile
+      context: .
+      dockerfile: Dockerfile
+      args:
+        INSTALL_NODEJS: ${INSTALL_NODEJS:-true}
+        INSTALL_GO: ${INSTALL_GO:-true}
+        INSTALL_GO_TOOLS: ${INSTALL_GO_TOOLS:-true}
     container_name: code-server # 容器名称
     environment:
       - PASSWORD=your_password_here # 设置code-server的访问密码
-      - PROXY_DOMAIN=code-server.my.domain # 设置访问域名（可选）
+      - PROXY_DOMAIN=code.2wahaha.top # 反向代理域名，WebSocket 需要此配置
       - TZ=Asia/Shanghai # 设置容器时区为中国标准时间
+      - DOCKER_HOST=unix:///var/run/docker.sock # Docker CLI 连接 dind daemon
     volumes:
-      - ./workspace:/home/coder/project # 挂载本地项目目录到容器内
-      - ./config:/home/coder/.config # 持久化code-server的配置文件
+      - ./home:/home/coder # 持久化整个 home 目录
       - ~/.ssh:/home/coder/.ssh:ro # 挂载SSH密钥（只读模式）
       - ~/.gitconfig:/home/coder/.gitconfig:ro # 挂载Git配置（只读模式）
+      - docker-certs:/home/coder/.docker # dind TLS 证书（dind 自动生成）
+      - docker-sock:/var/run/docker # 与 dind 共享 socket
     ports:
-      - "8080:8080" # 映射容器的8080端口到主机的8080端口
+      - "8081:8080" # 映射容器的8080端口到主机的8081端口
     restart: unless-stopped # 容器异常退出时自动重启
     networks:
       - code-server-network # 将容器加入自定义网络
-    security_opt:
-      - no-new-privileges:true # 增强安全性：禁止容器获取新的特权
+    depends_on:
+      - docker-dind
+    # user: "0:0"
     # 代理配置（默认注释）
     # environment:
     #   - HTTP_PROXY=http://172.17.0.1:7890 # HTTP代理设置
     #   - HTTPS_PROXY=http://172.17.0.1:7890 # HTTPS代理设置
     #   - NO_PROXY=localhost,127.0.0.1 # 不使用代理的地址
+
+  docker-dind:
+    image: docker:dind # 官方 DinD 镜像
+    container_name: code-server-dind
+    privileged: true # DinD 必须特权模式
+    environment:
+      - DOCKER_TLS_CERTDIR=/certs # TLS 证书目录，自动生成证书
+    volumes:
+      - docker-certs:/certs # 与 code-server 共享证书
+      - docker-sock:/var/run/docker # 共享 socket
+    restart: unless-stopped
+    networks:
+      - code-server-network
+
+volumes:
+  docker-sock:
+  docker-certs:
 
 networks:
   code-server-network: # 定义自定义网络
